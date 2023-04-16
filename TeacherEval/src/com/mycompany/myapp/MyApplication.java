@@ -32,6 +32,8 @@ public class MyApplication {
 
     private Form current;
     private Resources theme;
+    
+    String name;
 
     public void init(Object context) {
         // use two network threads instead of one
@@ -62,7 +64,7 @@ public class MyApplication {
             return;
         }
         Form Interafce1 = new Form("Teacher Eval", BoxLayout.y());
-        Form Interafce2 = new Form("Teacher Eval 1", BoxLayout.y());
+        Form Interafce2 = new Form("Teacher Eval", BoxLayout.y());
         
         ComboBox<String> name_list = new ComboBox<>();
         
@@ -80,15 +82,32 @@ public class MyApplication {
         
         Button btn_valider = new Button("Valider");
         
-        Interafce1.add(name_list);
+        Dialog popup = new Dialog("Confirmation");
+        Button btn_back=new Button("Back");
         
-         name_list.addActionListener(new ActionListener()  {
+        Label text = new Label();
+        
+        
+        
+        Interafce1.add(name_list);
+        Interafce1.show();
+        
+        Interafce2.add(note);
+        Interafce2.add(note_slide);
+        Interafce2.add(teacher_image);
+        Interafce2.add(btn_valider);
+        
+        popup.add(text);
+        popup.add(btn_back);
+        
+        name_list.addActionListener(new ActionListener()  {
             
             
             @Override
             public void actionPerformed(ActionEvent evt) {
 
-                
+                name = name_list.getSelectedItem();
+                        
                 if(name_list.getSelectedIndex()==0){
                     teacher_image.setImage(theme.getImage("nader.png"));
                 }
@@ -99,10 +118,8 @@ public class MyApplication {
                     teacher_image.setImage(theme.getImage("bassem.png"));
                 }
                 
-                Interafce2.add(note);
-                Interafce2.add(note_slide);
-                Interafce2.add(teacher_image);
-                Interafce2.add(btn_valider);
+                
+                Interafce1.showBack();
                 Interafce2.show();
             }
         });
@@ -117,8 +134,31 @@ public class MyApplication {
                 note.setText("note : "+Integer.toString(value));
             }
         });
-         
-        Interafce1.show();
+        
+        btn_valider.addActionListener(new ActionListener() {
+            
+            @Override
+            public void actionPerformed(ActionEvent evt) {
+                
+                int value = note_slide.getProgress();   
+        
+                text.setText("Vous avez attribué la note : "+
+                                       Integer.toString(value)+
+                                       " à Mr/Mme \n"+
+                                       name);
+                popup.showDialog();
+            }
+        });
+        
+        btn_back.addActionListener(new ActionListener(){
+            @Override
+            public void actionPerformed(ActionEvent evt) {
+                Interafce1.show();
+                
+            }
+        });
+        
+        
         
        
     }
